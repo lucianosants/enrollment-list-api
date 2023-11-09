@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id String @id @default(uuid())
+
+  name     String
+  age      Int
+  courseId String?
+
+  course    Course?   @relation(fields: [courseId], references: [id])
+  subjects  Subject[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Grades    Grade[]
+  status    Status    @default(Pending)
+
+  @@map("students")
+}
+
+model Course {
+  id        String    @id @default(uuid())
+  name      String
+  students  Student[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Subject {
+  id        String   @id @default(uuid())
+  name      String
+  grades    Grade[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Student   Student? @relation(fields: [studentId], references: [id])
+  studentId String?
+}
+
+model Grade {
+  id        String   @id @default(uuid())
+  value     Float
+  studentId String
+  subjectId String
+  student   Student  @relation(fields: [studentId], references: [id])
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Status {
+  Pending
+  Approved
+  Rejected
+}
