@@ -3,12 +3,14 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { Student } from './entities/student.entity';
+import { NotFoundError } from './errors/NotFound';
 
 @Injectable()
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createStudentDto: CreateStudentDto) {
+  async createStudent(createStudentDto: CreateStudentDto) {
     const createdStudentData: Prisma.StudentCreateInput = {
       name: createStudentDto.name,
       age: createStudentDto.age,
@@ -49,21 +51,38 @@ export class StudentService {
     };
   }
 
-  async findAll() {
+  async findAll(): Promise<Student[]> {
     const allStudents = await this.prisma.student.findMany({
       include: {
         course: true,
         subjects: true,
+        Grades: true,
       },
     });
 
     return allStudents;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  async findStudentById(id: string): Promise<Student> {
+    const studentData: Prisma.StudentWhereUniqueInput = {
+      id: id,
+    };
+
+    const studentFound = await this.prisma.student.findUnique({
+      where: { ...studentData },
+      include: {
+        course: true,
+        subjects: true,
+        Grades: true,
+      },
+    });
+
+    if (!studentFound) throw new NotFoundError().getMessage();
+
+    return studentFound;
   }
 
+  // eslint-disable-next-line
   update(id: number, updateStudentDto: UpdateStudentDto) {
     return `This action updates a #${id} student`;
   }

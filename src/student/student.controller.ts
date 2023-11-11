@@ -17,7 +17,7 @@ export class StudentController {
 
   @Post()
   create(@Body() createStudentDto: CreateStudentDto) {
-    return this.studentService.create(createStudentDto);
+    return this.studentService.createStudent(createStudentDto);
   }
 
   @Get()
@@ -27,7 +27,7 @@ export class StudentController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.studentService.findOne(+id);
+    return this.studentService.findStudentById(id);
   }
 
   @Patch(':id')
