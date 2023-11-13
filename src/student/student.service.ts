@@ -123,7 +123,17 @@ export class StudentService {
     return { ...updatedStudent };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  async remove(id: string) {
+    const studentFound = await this.prisma.student.findUnique({
+      where: { id },
+    });
+
+    if (!studentFound) throw new NotFoundError().getMessage();
+
+    const studentDeleted = await this.prisma.student.delete({
+      where: { id },
+    });
+
+    return `${studentDeleted.name} foi removido da lista de alunos.`;
   }
 }
