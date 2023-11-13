@@ -81,9 +81,46 @@ export class StudentService {
     return studentFound;
   }
 
-  // eslint-disable-next-line
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: string, updateStudentDto: UpdateStudentDto) {
+    const foundStudent = await this.prisma.student.findUnique({
+      where: { id },
+    });
+
+    if (!foundStudent) throw new NotFoundError().getMessage();
+
+    const updatedStudent = await this.prisma.student.update({
+      where: { id },
+      data: {
+        age: updateStudentDto.age,
+        name: updateStudentDto.name,
+      },
+    });
+
+    const courseIsAlready = await this.prisma.course.findUnique({
+      where: {
+        name: updateStudentDto.course,
+      },
+    });
+
+    if (!courseIsAlready) {
+      const createdCourse = await this.prisma.course.create({
+        data: {
+          name: updateStudentDto.course,
+        },
+      });
+
+      await this.prisma.student.update({
+        where: { id: updatedStudent.id },
+        data: { courseId: createdCourse.id },
+      });
+    } else {
+      await this.prisma.student.update({
+        where: { id: updatedStudent.id },
+        data: { courseId: courseIsAlready.id },
+      });
+    }
+
+    return { ...updatedStudent };
   }
 
   remove(id: number) {
