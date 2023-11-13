@@ -5,7 +5,6 @@ import {
   IsOptional,
   IsString,
   Max,
-  MaxLength,
   Min,
   MinLength,
 } from 'class-validator';
@@ -20,7 +19,6 @@ export class CreateStudentDto {
   @IsString({ message: 'Campo nome é inválido.' })
   @IsNotEmpty({ message: 'O nome não pode ser vazio.' })
   @MinLength(3, { message: 'Nome precisa ter no mínimo 3 caracteres.' })
-  @MaxLength(28, { message: 'Nome não pode ter mais de 35 caracteres.' })
   name: string;
 
   @IsNumber()
@@ -36,6 +34,5 @@ export class CreateStudentDto {
   @IsString()
   @IsNotEmpty({ message: 'O campo curso não pode ser vazio.' })
   @MinLength(3, { message: 'Curso precisa ter no mínimo 3 caracteres.' })
-  @MaxLength(20, { message: 'Curso não pode ter mais de 35 caracteres.' })
   course: string;
 }

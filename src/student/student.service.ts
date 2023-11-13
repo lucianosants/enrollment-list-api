@@ -47,8 +47,6 @@ export class StudentService {
 
     return {
       ...createdStudent,
-      courseId: courseIsAlready.id,
-      course: courseIsAlready.name,
     };
   }
 
