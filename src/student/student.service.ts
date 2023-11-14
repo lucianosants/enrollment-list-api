@@ -4,7 +4,8 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { Student } from './entities/student.entity';
-import { NotFoundError } from './errors/NotFound';
+import { NotFoundError } from './errors/notFound.error';
+import { IsAlreadyError } from './errors/isAlready.error';
 
 @Injectable()
 export class StudentService {
@@ -16,6 +17,19 @@ export class StudentService {
       age: createStudentDto.age,
       status: createStudentDto.status,
     };
+
+    const studentFound = await this.prisma.student.findFirst({
+      where: {
+        name: {
+          contains: createStudentDto.name,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (studentFound) {
+      throw new IsAlreadyError().getMessage(createStudentDto.name);
+    }
 
     const createdStudent = await this.prisma.student.create({
       data: { ...createdStudentData },
@@ -57,6 +71,7 @@ export class StudentService {
         subjects: true,
         Grades: true,
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     return allStudents;
@@ -82,23 +97,27 @@ export class StudentService {
   }
 
   async update(id: string, updateStudentDto: UpdateStudentDto) {
-    const foundStudent = await this.prisma.student.findUnique({
+    const studentFound = await this.prisma.student.findUnique({
       where: { id },
+      include: {
+        course: true,
+      },
     });
 
-    if (!foundStudent) throw new NotFoundError().getMessage();
+    if (!studentFound) throw new NotFoundError().getMessage();
 
     const updatedStudent = await this.prisma.student.update({
       where: { id },
       data: {
         age: updateStudentDto.age,
         name: updateStudentDto.name,
+        status: updateStudentDto.status,
       },
     });
 
     const courseIsAlready = await this.prisma.course.findUnique({
       where: {
-        name: updateStudentDto.course,
+        name: studentFound.course.name,
       },
     });
 
@@ -121,6 +140,30 @@ export class StudentService {
     }
 
     return { ...updatedStudent };
+  }
+
+  async findStudentByName(name: string): Promise<Student[]> {
+    const studentFound = await this.prisma.student.findMany({
+      where: {
+        name: {
+          mode: 'insensitive',
+          contains: name,
+        },
+      },
+      include: {
+        course: true,
+        Grades: true,
+        subjects: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!studentFound.length)
+      throw new NotFoundError(
+        'Não foi possível encontrar nenhum aluno com este nome.',
+      ).getMessage();
+
+    return studentFound;
   }
 
   async remove(id: string) {
