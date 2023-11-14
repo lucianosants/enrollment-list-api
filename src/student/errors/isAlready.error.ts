@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 
 export class IsAlreadyError extends Error {
   private readonly defaultMessage = 'já está matriculado.';
@@ -9,7 +9,7 @@ export class IsAlreadyError extends Error {
   }
 
   getMessage(name: string = 'Este aluno') {
-    throw new NotFoundException(
+    throw new BadRequestException(
       this.message || `${name} ${this.defaultMessage}`,
     );
   }
