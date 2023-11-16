@@ -12,6 +12,8 @@ import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
+type StudentsQueryProps = { name: string; take: string; skip: string };
+
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -22,11 +24,15 @@ export class StudentController {
   }
 
   @Get()
-  findAll(@Query('name') name: string) {
-    if (name) {
-      return this.studentService.findStudentByName(name);
+  findAll(@Query() query: StudentsQueryProps) {
+    if (query.name) {
+      return this.studentService.findStudentByName(query.name);
     }
-    return this.studentService.findAll();
+
+    const skip = Number(query?.skip) || 0;
+    const take = Number(query?.take) || 20;
+
+    return this.studentService.findAll(skip, take);
   }
 
   @Get(':id')

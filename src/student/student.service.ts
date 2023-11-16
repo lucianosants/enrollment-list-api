@@ -7,6 +7,8 @@ import { Student } from './entities/student.entity';
 import { NotFoundError } from './errors/notFound.error';
 import { IsAlreadyError } from './errors/isAlready.error';
 
+type Students = { total: number; totalPage: number; students: Student[] };
+
 @Injectable()
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
@@ -64,15 +66,24 @@ export class StudentService {
     };
   }
 
-  async findAll(): Promise<Student[]> {
-    const allStudents = await this.prisma.student.findMany({
-      include: {
-        course: true,
-        subjects: true,
-        Grades: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(skip: number, take: number): Promise<Students> {
+    const [students, total] = await this.prisma.$transaction([
+      this.prisma.student.findMany({
+        include: {
+          course: true,
+          subjects: true,
+          Grades: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: skip || 0,
+        take: take || 0,
+      }),
+      this.prisma.student.count(),
+    ]);
+
+    const totalPage = Math.ceil(total / take);
+
+    const allStudents = { total, totalPage, students };
 
     return allStudents;
   }
