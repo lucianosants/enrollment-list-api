@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -37,5 +38,10 @@ export class CourseController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.courseService.updateCourse(id, updateCourseDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.courseService.removeCourse(id);
   }
 }

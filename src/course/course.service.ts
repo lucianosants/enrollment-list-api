@@ -82,4 +82,16 @@ export class CourseService {
 
     return `${courseFound.name} foi alterado para ${updateCourseDto.name} com sucesso.`;
   }
+
+  async removeCourse(id: string) {
+    const courseFound = await this.prisma.course.findFirst({ where: { id } });
+
+    if (!courseFound) {
+      throw new NotFoundError('Curso não encontrado.').showError();
+    }
+
+    await this.prisma.course.delete({ where: { id } });
+
+    return `${courseFound.name} foi removido com sucesso.`;
+  }
 }
