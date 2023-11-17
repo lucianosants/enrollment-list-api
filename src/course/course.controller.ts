@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 
@@ -12,7 +12,11 @@ export class CourseController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() query: { name: string }) {
+    if (query.name) {
+      return this.courseService.findCourseByName(query?.name);
+    }
+
     return this.courseService.findAllCourses();
   }
 

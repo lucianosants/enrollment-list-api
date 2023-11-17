@@ -47,4 +47,21 @@ export class CourseService {
 
     return courseFound;
   }
+
+  async findCourseByName(name: string): Promise<Course> {
+    const coursesFound = await this.prisma.course.findFirst({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (!coursesFound) {
+      throw new NotFoundError('Curso não encontrado.').showError();
+    }
+
+    return coursesFound;
+  }
 }
