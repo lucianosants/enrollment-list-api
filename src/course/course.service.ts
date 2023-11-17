@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 
 @Injectable()
 export class CourseService {
@@ -12,7 +13,8 @@ export class CourseService {
     });
 
     if (courseFound) {
-      return { message: `${createCourseDto.name} já está cadastrado.` };
+      const message = `${createCourseDto.name} já está cadastrado.`;
+      throw new IsAlreadyError(message).showError();
     }
 
     await this.prisma.course.create({

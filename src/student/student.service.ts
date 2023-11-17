@@ -4,8 +4,8 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { Student } from './entities/student.entity';
-import { NotFoundError } from './errors/notFound.error';
-import { IsAlreadyError } from './errors/isAlready.error';
+import { NotFoundError } from '../shared/errors/notFound.error';
+import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 
 type Students = { total: number; totalPage: number; students: Student[] };
 
@@ -30,7 +30,8 @@ export class StudentService {
     });
 
     if (studentFound) {
-      throw new IsAlreadyError().getMessage(createStudentDto.name);
+      const message = `${createStudentDto.name} já está matriculado.`;
+      throw new IsAlreadyError(message).showError();
     }
 
     const createdStudent = await this.prisma.student.create({
@@ -102,7 +103,9 @@ export class StudentService {
       },
     });
 
-    if (!studentFound) throw new NotFoundError().getMessage();
+    if (!studentFound) {
+      throw new NotFoundError('Aluno não encontrado.').showError();
+    }
 
     return studentFound;
   }
@@ -115,7 +118,9 @@ export class StudentService {
       },
     });
 
-    if (!studentFound) throw new NotFoundError().getMessage();
+    if (!studentFound) {
+      throw new NotFoundError('Aluno não encontrado.').showError();
+    }
 
     const updatedStudent = await this.prisma.student.update({
       where: { id },
@@ -169,10 +174,10 @@ export class StudentService {
       orderBy: { createdAt: 'desc' },
     });
 
-    if (!studentFound.length)
-      throw new NotFoundError(
-        'Não foi possível encontrar nenhum aluno com este nome.',
-      ).getMessage();
+    if (!studentFound.length) {
+      const message = 'Não foi possível encontrar nenhum aluno com este nome.';
+      throw new NotFoundError(message).showError();
+    }
 
     return studentFound;
   }
@@ -182,7 +187,9 @@ export class StudentService {
       where: { id },
     });
 
-    if (!studentFound) throw new NotFoundError().getMessage();
+    if (!studentFound) {
+      throw new NotFoundError('Aluno não encontrado.').showError;
+    }
 
     const studentDeleted = await this.prisma.student.delete({
       where: { id },
