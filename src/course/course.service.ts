@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 import { Course } from './entities/course.entity';
 import { NotFoundError } from 'src/shared/errors/notFound.error';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
 export class CourseService {
@@ -63,5 +64,22 @@ export class CourseService {
     }
 
     return coursesFound;
+  }
+
+  async updateCourse(id: string, updateCourseDto: UpdateCourseDto) {
+    const courseFound = await this.prisma.course.findFirst({ where: { id } });
+
+    if (!courseFound) {
+      throw new NotFoundError('Curso não encontrado.').showError();
+    }
+
+    await this.prisma.course.update({
+      where: { id },
+      data: {
+        name: updateCourseDto.name,
+      },
+    });
+
+    return `${courseFound.name} foi alterado para ${updateCourseDto.name} com sucesso.`;
   }
 }
