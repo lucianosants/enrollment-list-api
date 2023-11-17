@@ -1,1 +1,6 @@
-export class Course {}
+export class Course {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

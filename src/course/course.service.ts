@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
+import { Course } from './entities/course.entity';
 
 @Injectable()
 export class CourseService {
@@ -26,5 +27,11 @@ export class CourseService {
     return {
       message: `O curso ${createCourseDto.name}, foi criado com sucesso.`,
     };
+  }
+
+  async findAllCourses(): Promise<Course[]> {
+    const courses = await this.prisma.course.findMany();
+
+    return courses;
   }
 }
