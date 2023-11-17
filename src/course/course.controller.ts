@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 
@@ -14,5 +14,10 @@ export class CourseController {
   @Get()
   findAll() {
     return this.courseService.findAllCourses();
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.courseService.findCurseById(id);
   }
 }

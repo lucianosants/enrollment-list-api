@@ -3,6 +3,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 import { Course } from './entities/course.entity';
+import { NotFoundError } from 'src/shared/errors/notFound.error';
 
 @Injectable()
 export class CourseService {
@@ -33,5 +34,17 @@ export class CourseService {
     const courses = await this.prisma.course.findMany();
 
     return courses;
+  }
+
+  async findCurseById(id: string): Promise<Course> {
+    const courseFound = await this.prisma.course.findUnique({
+      where: { id },
+    });
+
+    if (!courseFound) {
+      throw new NotFoundError('Curso não encontrado.').showError();
+    }
+
+    return courseFound;
   }
 }
