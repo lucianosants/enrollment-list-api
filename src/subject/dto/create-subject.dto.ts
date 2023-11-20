@@ -5,4 +5,8 @@ export class CreateSubjectDto {
   @MinLength(3, { message: 'A disciplina deve ter no mínimo 3 caracteres.' })
   @IsNotEmpty({ message: 'Uma disciplina deve ser informada.' })
   name: string;
+
+  @IsString({ message: 'Informe um ID válio.' })
+  @IsNotEmpty({ message: 'ID do aluno não informado.' })
+  studentId: string;
 }
