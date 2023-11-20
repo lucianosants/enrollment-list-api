@@ -3,6 +3,7 @@ import { CreateSubjectDto } from './dto/create-subject.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 import { NotFoundError } from 'src/shared/errors/notFound.error';
+import { UpdateSubjectDto } from './dto/update-subject.dto';
 
 @Injectable()
 export class SubjectService {
@@ -40,5 +41,23 @@ export class SubjectService {
     });
 
     return { message: `${createSubjectDto.name} cadastrada com sucesso.` };
+  }
+
+  async updateSubject(id: string, updateSubjectDto: UpdateSubjectDto) {
+    const subjectFound = await this.prisma.subject.findUnique({
+      where: { id },
+    });
+
+    if (!subjectFound) {
+      const errorMessage = `Disciplina não encontrada`;
+      throw new NotFoundError(errorMessage).showError();
+    }
+
+    await this.prisma.subject.update({
+      where: { id },
+      data: { name: updateSubjectDto.name },
+    });
+
+    return { message: `Disciplina atualizada com sucesso.` };
   }
 }
