@@ -71,7 +71,15 @@ export class SubjectService {
       throw new NotFoundError(errorMessage).showError();
     }
 
-    await this.prisma.subject.delete({ where: { id } });
+    await this.prisma.$transaction([
+      this.prisma.grade.deleteMany({
+        where: {
+          subjectId: subjectFound.id,
+          student: { id: subjectFound.studentId },
+        },
+      }),
+      this.prisma.subject.delete({ where: { id } }),
+    ]);
 
     return { message: `${subjectFound.name} foi removido.` };
   }
