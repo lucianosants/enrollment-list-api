@@ -3,6 +3,7 @@ import { CreateGradeDto } from './dto/create-grade.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { NotFoundError } from 'src/shared/errors/notFound.error';
+import { UpdateGradeDto } from './dto/update-grade.dto';
 
 @Injectable()
 export class GradeService {
@@ -41,5 +42,27 @@ export class GradeService {
     });
 
     return gradeCreated;
+  }
+
+  async updateGrade(id: string, updateGradeDto: UpdateGradeDto) {
+    const gradeFound = await this.prisma.grade.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!gradeFound) {
+      throw new NotFoundError('Não foi possível encontrar a nota.').showError();
+    }
+
+    await this.prisma.grade.update({
+      where: { id },
+      data: {
+        value: updateGradeDto.value,
+        createdAt: updateGradeDto.createdAt,
+      },
+    });
+
+    return { message: 'Nota atualizada com sucesso.' };
   }
 }
