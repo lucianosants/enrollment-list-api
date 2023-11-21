@@ -65,4 +65,16 @@ export class GradeService {
 
     return { message: 'Nota atualizada com sucesso.' };
   }
+
+  async removeGrade(id: string) {
+    const gradeFound = await this.prisma.grade.findFirst({ where: { id } });
+
+    if (!gradeFound) {
+      throw new NotFoundError('Não foi possível encontrar a nota.').showError();
+    }
+
+    await this.prisma.grade.delete({ where: { id } });
+
+    return { message: 'Nota removida com sucesso.' };
+  }
 }
