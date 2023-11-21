@@ -60,4 +60,19 @@ export class SubjectService {
 
     return { message: `Disciplina atualizada com sucesso.` };
   }
+
+  async removeSubject(id: string) {
+    const subjectFound = await this.prisma.subject.findUnique({
+      where: { id },
+    });
+
+    if (!subjectFound) {
+      const errorMessage = `Disciplina não encontrada`;
+      throw new NotFoundError(errorMessage).showError();
+    }
+
+    await this.prisma.subject.delete({ where: { id } });
+
+    return { message: `${subjectFound.name} foi removido.` };
+  }
 }
