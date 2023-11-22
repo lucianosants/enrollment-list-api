@@ -8,11 +8,13 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { StudentService } from './student.service';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
 
-type StudentsQueryProps = { name: string; take: string; skip: string };
+import { StudentService } from './student.service';
+
+import { CreateStudentDto } from 'src/shared/dto/student/create-student.dto';
+import { UpdateStudentDto } from 'src/shared/dto/student/update-student.dto';
+
+import { PaginationQueryProps } from 'src/shared/models/pagination-query.model';
 
 @Controller('student')
 export class StudentController {
@@ -24,7 +26,7 @@ export class StudentController {
   }
 
   @Get()
-  findAll(@Query() query: StudentsQueryProps) {
+  findAll(@Query() query: PaginationQueryProps) {
     if (query.name) {
       return this.studentService.findStudentByName(query.name);
     }

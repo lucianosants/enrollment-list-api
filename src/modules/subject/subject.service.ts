@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSubjectDto } from './dto/create-subject.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+
+import { PrismaService } from 'src/database/prisma/prisma.service';
+
+import { CreateSubjectDto } from 'src/shared/dto/subject/create-subject.dto';
+import { UpdateSubjectDto } from 'src/shared/dto/subject/update-subject.dto';
+
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 import { NotFoundError } from 'src/shared/errors/notFound.error';
-import { UpdateSubjectDto } from './dto/update-subject.dto';
 
 @Injectable()
 export class SubjectService {

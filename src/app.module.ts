@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 
-import { PrismaModule } from './prisma/prisma.module';
-import { StudentModule } from './student/student.module';
-import { StudentController } from './student/student.controller';
-import { StudentService } from './student/student.service';
-import { CourseModule } from './course/course.module';
-import { SubjectModule } from './subject/subject.module';
-import { GradeModule } from './grade/grade.module';
+import { PrismaModule } from './database/prisma/prisma.module';
+
+import { StudentController } from './modules/student/student.controller';
+
+import { StudentModule } from './modules/student/student.module';
+import { StudentService } from './modules/student/student.service';
+import { CourseModule } from './modules/course/course.module';
+import { SubjectModule } from './modules/subject/subject.module';
+import { GradeModule } from './modules/grade/grade.module';
 
 @Module({
   imports: [

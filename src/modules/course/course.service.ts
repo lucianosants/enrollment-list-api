@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCourseDto } from './dto/create-course.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
-import { Course } from './entities/course.entity';
+
+import { PrismaService } from 'src/database/prisma/prisma.service';
+
+import { CreateCourseDto } from 'src/shared/dto/course/create-course.dto';
+import { UpdateCourseDto } from 'src/shared/dto/course/update-course.dto';
+import { Course } from 'src/shared/entities/course/course.entity';
+
 import { NotFoundError } from 'src/shared/errors/notFound.error';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 
 @Injectable()
 export class CourseService {

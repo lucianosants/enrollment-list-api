@@ -1,7 +1,9 @@
 import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+
 import { GradeService } from './grade.service';
-import { CreateGradeDto } from './dto/create-grade.dto';
-import { UpdateGradeDto } from './dto/update-grade.dto';
+
+import { CreateGradeDto } from 'src/shared/dto/grade/create-grade.dto';
+import { UpdateGradeDto } from 'src/shared/dto/grade/update-grade.dto';
 
 @Controller('grade')
 export class GradeController {

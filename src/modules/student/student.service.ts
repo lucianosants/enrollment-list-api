@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { Student } from './entities/student.entity';
-import { NotFoundError } from '../shared/errors/notFound.error';
+
+import { PrismaService } from 'src/database/prisma/prisma.service';
+
+import { CreateStudentDto } from 'src/shared/dto/student/create-student.dto';
+import { UpdateStudentDto } from 'src/shared/dto/student/update-student.dto';
+
+import { Student } from 'src/shared/entities/student/student.entity';
+
+import { NotFoundError } from 'src/shared/errors/notFound.error';
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 
-type Students = { total: number; totalPage: number; students: Student[] };
+import { Students } from 'src/shared/models/student.model';
 
 @Injectable()
 export class StudentService {

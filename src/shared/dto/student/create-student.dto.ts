@@ -8,12 +8,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-
-enum StatusRole {
-  Pending,
-  Approved,
-  Rejected,
-}
+import { StatusRole } from 'src/shared/models/status-role.model';
 
 export class CreateStudentDto {
   @IsString({ message: 'Campo nome é inválido.' })

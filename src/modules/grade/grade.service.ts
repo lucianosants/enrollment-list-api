@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateGradeDto } from './dto/create-grade.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+
+import { PrismaService } from 'src/database/prisma/prisma.service';
+
+import { CreateGradeDto } from 'src/shared/dto/grade/create-grade.dto';
+import { UpdateGradeDto } from 'src/shared/dto/grade/update-grade.dto';
+
 import { NotFoundError } from 'src/shared/errors/notFound.error';
-import { UpdateGradeDto } from './dto/update-grade.dto';
 
 @Injectable()
 export class GradeService {
