@@ -192,7 +192,7 @@ export class StudentService {
     });
 
     if (!studentFound) {
-      throw new NotFoundError('Aluno não encontrado.').showError;
+      throw new NotFoundError('Aluno não encontrado.').showError();
     }
 
     const studentDeleted = await this.prisma.student.delete({
