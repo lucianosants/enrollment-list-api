@@ -35,7 +35,11 @@ export class CourseService {
   }
 
   async findAllCourses(): Promise<Course[]> {
-    const courses = await this.prisma.course.findMany();
+    const courses = await this.prisma.course.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
 
     return courses;
   }
@@ -83,7 +87,9 @@ export class CourseService {
       },
     });
 
-    return `${courseFound.name} foi alterado para ${updateCourseDto.name} com sucesso.`;
+    return {
+      message: `${courseFound.name} foi alterado para ${updateCourseDto.name} com sucesso.`,
+    };
   }
 
   async removeCourse(id: string) {
@@ -95,6 +101,6 @@ export class CourseService {
 
     await this.prisma.course.delete({ where: { id } });
 
-    return `${courseFound.name} foi removido com sucesso.`;
+    return { message: `${courseFound.name} foi removido com sucesso.` };
   }
 }

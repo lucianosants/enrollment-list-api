@@ -133,11 +133,14 @@ export class StudentService {
         name: updateStudentDto.name,
         status: updateStudentDto.status,
       },
+      include: {
+        course: true,
+      },
     });
 
     const courseIsAlready = await this.prisma.course.findUnique({
       where: {
-        name: studentFound.course.name,
+        name: updateStudentDto.course,
       },
     });
 
@@ -199,6 +202,8 @@ export class StudentService {
       where: { id },
     });
 
-    return `${studentDeleted.name} foi removido da lista de alunos.`;
+    return {
+      message: `${studentDeleted.name} foi removido da lista de alunos.`,
+    };
   }
 }
