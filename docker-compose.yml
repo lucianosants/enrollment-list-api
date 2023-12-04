@@ -22,9 +22,8 @@ services:
       - 3001:3001
     environment:
       - NODE_ENV=dev
-      - JWT_SECRET=secret
       - DATABASE_URL=postgresql://docker:docker@enrollment-api-postgres:5432/enrollment-api?schema=public
     volumes:
       - ./:/app
     depends_on:
-      - enrollment-api-postgres  
+      - enrollment-api-postgres
