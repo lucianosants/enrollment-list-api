@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsDateString,
   Max,
   Min,
   MinLength,
@@ -30,4 +31,8 @@ export class CreateStudentDto {
   @IsNotEmpty({ message: 'O campo curso não pode ser vazio.' })
   @MinLength(3, { message: 'Curso precisa ter no mínimo 3 caracteres.' })
   course: string;
+
+  @IsDateString({}, { message: 'Data deve ser uma data válida.' })
+  @IsOptional()
+  createdAt?: Date;
 }
