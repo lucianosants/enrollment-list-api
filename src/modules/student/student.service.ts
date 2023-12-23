@@ -22,6 +22,7 @@ export class StudentService {
       name: createStudentDto.name,
       age: createStudentDto.age,
       status: createStudentDto.status,
+      createdAt: createStudentDto.createdAt || new Date(),
     };
 
     const studentFound = await this.prisma.student.findFirst({
