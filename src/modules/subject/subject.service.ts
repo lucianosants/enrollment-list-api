@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 
 import { CreateSubjectDto } from 'src/shared/dto/subject/create-subject.dto';
-import { UpdateSubjectDto } from 'src/shared/dto/subject/update-subject.dto';
 
 import { IsAlreadyError } from 'src/shared/errors/isAlready.error';
 import { NotFoundError } from 'src/shared/errors/notFound.error';
@@ -22,46 +21,34 @@ export class SubjectService {
       throw new NotFoundError(errorMessage).showError();
     }
 
-    const subjectFound = await this.prisma.subject.findFirst({
-      where: {
-        name: createSubjectDto.name,
-        Student: {
-          id: studentFound.id,
+    for (const subject of createSubjectDto.subjects) {
+      const existingSubject = await this.prisma.subject.findFirst({
+        where: {
+          name: subject.name,
+          studentId: studentFound.id,
         },
-      },
-    });
+      });
 
-    if (subjectFound) {
-      const errorMessage = `${createSubjectDto.name} já está incluso para o aluno ${studentFound.name}`;
-      throw new IsAlreadyError(errorMessage).showError();
+      if (existingSubject) {
+        const errorMessage = `${subject.name} já está incluso para o aluno ${studentFound.name}`;
+        throw new IsAlreadyError(errorMessage).showError();
+      }
     }
 
-    await this.prisma.subject.create({
-      data: {
-        name: createSubjectDto.name,
-        studentId: studentFound.id,
-      },
+    const manySubjects: CreateSubjectDto = {
+      studentId: createSubjectDto.studentId,
+      subjects: createSubjectDto.subjects.map((item) => ({
+        name: item.name,
+        studentId: item.studentId,
+      })),
+    };
+
+    await this.prisma.subject.createMany({
+      data: manySubjects.subjects,
+      skipDuplicates: false,
     });
 
-    return { message: `${createSubjectDto.name} cadastrada com sucesso.` };
-  }
-
-  async updateSubject(id: string, updateSubjectDto: UpdateSubjectDto) {
-    const subjectFound = await this.prisma.subject.findUnique({
-      where: { id },
-    });
-
-    if (!subjectFound) {
-      const errorMessage = `Disciplina não encontrada`;
-      throw new NotFoundError(errorMessage).showError();
-    }
-
-    await this.prisma.subject.update({
-      where: { id },
-      data: { name: updateSubjectDto.name },
-    });
-
-    return { message: `Disciplina atualizada com sucesso.` };
+    return { message: `Disciplina(s) cadastradas com sucesso.` };
   }
 
   async removeSubject(id: string) {
