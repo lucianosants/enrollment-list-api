@@ -133,6 +133,7 @@ export class StudentService {
         age: updateStudentDto.age,
         name: updateStudentDto.name,
         status: updateStudentDto.status,
+        createdAt: updateStudentDto.createdAt,
       },
       include: {
         course: true,
