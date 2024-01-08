@@ -123,6 +123,20 @@ export class StudentService {
       },
     });
 
+    const isAlreadyStudent = await this.prisma.student.findFirst({
+      where: {
+        name: {
+          contains: updateStudentDto.name,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (isAlreadyStudent && isAlreadyStudent.id !== studentFound.id) {
+      const message = `Um aluno com o nome ${updateStudentDto.name} já está cadastrado.`;
+      throw new IsAlreadyError(message).showError();
+    }
+
     if (!studentFound) {
       throw new NotFoundError('Aluno não encontrado.').showError();
     }
