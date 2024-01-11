@@ -76,9 +76,7 @@ export class StudentService {
     const [students, total] = await this.prisma.$transaction([
       this.prisma.student.findMany({
         include: {
-          course: true,
-          subjects: true,
-          Grades: true,
+          course: { select: { id: true, name: true } },
         },
         orderBy: { createdAt: 'desc' },
         skip: skip || 0,
@@ -91,7 +89,7 @@ export class StudentService {
 
     const allStudents = { total, totalPage, students };
 
-    return allStudents;
+    return { ...allStudents };
   }
 
   async findStudentById(id: string): Promise<Student> {
@@ -102,9 +100,29 @@ export class StudentService {
     const studentFound = await this.prisma.student.findUnique({
       where: { ...studentData },
       include: {
-        course: true,
-        subjects: true,
-        Grades: true,
+        course: {
+          select: { id: true, name: true },
+        },
+        subjects: {
+          select: {
+            id: true,
+            name: true,
+            studentId: true,
+          },
+        },
+        Grades: {
+          select: {
+            id: true,
+            value: true,
+            subjectId: true,
+            studentId: true,
+            subject: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -112,7 +130,7 @@ export class StudentService {
       throw new NotFoundError('Aluno não encontrado.').showError();
     }
 
-    return studentFound;
+    return { ...studentFound };
   }
 
   async update(id: string, updateStudentDto: UpdateStudentDto) {
@@ -190,9 +208,7 @@ export class StudentService {
         },
       },
       include: {
-        course: true,
-        Grades: true,
-        subjects: true,
+        course: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -202,7 +218,7 @@ export class StudentService {
       throw new NotFoundError(message).showError();
     }
 
-    return studentFound;
+    return [...studentFound];
   }
 
   async remove(id: string) {

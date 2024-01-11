@@ -1,3 +1,7 @@
+import { Course } from '../course/course.entity';
+import { Grade } from '../grade/grade.entity';
+import { Subject } from '../subject/subject.entity';
+
 export class Student {
   id: string;
   name: string;
@@ -6,25 +10,7 @@ export class Student {
   createdAt: Date;
   updatedAt: Date;
   status: 'Pending' | 'Approved' | 'Rejected';
-  course: {
-    id: string;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  subjects: Array<{
-    id: string;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-    studentId: string;
-  }>;
-  Grades: Array<{
-    id: string;
-    value: number;
-    studentId: string;
-    subjectId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }>;
+  course?: Course;
+  subjects?: Subject[];
+  Grades?: Grade[] & Partial<Subject>;
 }

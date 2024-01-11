@@ -3,6 +3,6 @@ export class Grade {
   value: number;
   studentId: string;
   subjectId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
